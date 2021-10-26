@@ -9,7 +9,7 @@ use tokio::runtime::Runtime;
 fn main() {
     // Change this to a desired
     let height: i64 = 8143166;
-    println!("Getting Cosmos Transactions for height {:?}", height);
+    println!("Getting messages for transactions in height {:?}", height);
 
     let grpc_addr: String;
     match env::var("NODE_GRPC") {
