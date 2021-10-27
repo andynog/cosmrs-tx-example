@@ -1,14 +1,14 @@
 use cosmos_sdk_proto::cosmos::tx::v1beta1::service_client::ServiceClient;
 use cosmos_sdk_proto::cosmos::tx::v1beta1::{GetTxsEventRequest, GetTxsEventResponse};
 use cosmrs::Tx;
-//use prost_types::Any;
+use prost_types::Any;
 use std::env;
 use std::sync::Arc;
 use tokio::runtime::Runtime;
 
 fn main() {
     // Change this to a desired
-    let height: i64 = 8143166;
+    let height: i64 = 8150664;
     println!("Getting messages for transactions in height {:?}", height);
 
     let grpc_addr: String;
@@ -44,11 +44,19 @@ fn main() {
 
     for tx_resp in response.tx_responses.iter() {
         let tx = Tx::from_bytes(tx_resp.clone().tx.unwrap().value.as_slice()).unwrap();
+        let mut m_types = Vec::<String>::new();
         for msg in tx.body.messages {
-            //TODO: Need to get m.type_url
-            //let m = Any::from(msg);
-
-            println!("{:?}", msg);
+            let m = Any::from(msg.clone());
+            let m_type = m.type_url.split('.').last();
+            match m_type {
+                None => {
+                    println!("{:?}","".to_string());
+                }
+                Some(t) => {
+                    m_types.push(t.to_string());
+                }
+            }
         }
+        println!("{:?}", m_types.join("|"));
     }
 }
