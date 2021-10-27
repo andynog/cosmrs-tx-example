@@ -8,7 +8,7 @@ use tokio::runtime::Runtime;
 
 fn main() {
     // Change this to a desired
-    let height: i64 = 8150664;
+    let height: i64 = 5258498;
     println!("Getting messages for transactions in height {:?}", height);
 
     let grpc_addr: String;
