@@ -57,6 +57,6 @@ fn main() {
                 }
             }
         }
-        println!("{:?}", m_types.join("|"));
+        println!("{:?},{:?},{:?}", tx_resp.height, tx_resp.txhash, m_types.join("|"));
     }
 }
