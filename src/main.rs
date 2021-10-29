@@ -1,9 +1,10 @@
-use cosmos_sdk_proto::cosmos::tx::v1beta1::service_client::ServiceClient;
-use cosmos_sdk_proto::cosmos::tx::v1beta1::{GetTxsEventRequest, GetTxsEventResponse};
-use cosmrs::Tx;
-use prost_types::Any;
 use std::env;
 use std::sync::Arc;
+
+use cosmos_sdk_proto::cosmos::tx::v1beta1::{GetTxsEventRequest, GetTxsEventResponse};
+use cosmos_sdk_proto::cosmos::tx::v1beta1::service_client::ServiceClient;
+use cosmrs::Tx;
+use prost_types::Any;
 use tokio::runtime::Runtime;
 
 fn main() {
@@ -43,20 +44,33 @@ fn main() {
         .into_inner();
 
     for tx_resp in response.tx_responses.iter() {
-        let tx = Tx::from_bytes(tx_resp.clone().tx.unwrap().value.as_slice()).unwrap();
-        let mut m_types = Vec::<String>::new();
-        for msg in tx.body.messages {
-            let m = Any::from(msg.clone());
-            let m_type = m.type_url.split('.').last();
-            match m_type {
-                None => {
-                    println!("{:?}","".to_string());
-                }
-                Some(t) => {
-                    m_types.push(t.to_string());
+        match tx_resp.clone().tx {
+            None => {
+                println!("No transaction");
+            }
+            Some(tx) => {
+                let tx_result = Tx::from_bytes(tx.value.as_slice());
+                match tx_result {
+                    Ok(t) => {
+                        let mut m_types = Vec::<String>::new();
+                        for msg in t.body.messages {
+                            let m = Any::from(msg.clone());
+                            let m_type = m.type_url.split('.').last();
+                            match m_type {
+                                None => {
+                                }
+                                Some(t) => {
+                                    m_types.push(t.to_string());
+                                }
+                            }
+                        }
+                        println!("{:?},{:?},{:?}", tx_resp.height, tx_resp.txhash, m_types.join("|"));
+                    }
+                    Err(e) => {
+                        println!("Error converting tx: Block {:?} - Height {:?} - Error: {:?}", tx_resp.height, tx_resp.txhash, e);
+                    }
                 }
             }
         }
-        println!("{:?},{:?},{:?}", tx_resp.height, tx_resp.txhash, m_types.join("|"));
     }
 }

@@ -1,13 +1,13 @@
 [package]
 name = "cosmrs-tx-example"
 version = "0.1.0"
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 tokio = { version = "1.0", features = ["rt-multi-thread", "sync"] }
-cosmos-sdk-proto = "0.6.3"
-tonic = "0.4.1"
-cosmrs = "0.2.1"
-prost-types = "0.7.0"
+cosmos-sdk-proto = "0.8"
+tonic = "0.6"
+cosmrs = "0.3"
+prost-types = "0.9"
